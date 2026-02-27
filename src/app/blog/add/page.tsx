@@ -1,35 +1,38 @@
-"use client"
+"use client";
 
-import Form from '@/components/Form'
-import { useRouter } from 'next/navigation'
+import Form from "@/components/Form";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-const page = () => {
-
+const AddPostPage = () => {
   const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (formData: FormData) => {
-    try {
-      const response = await fetch(`/api/blog`, {
-        method: 'POST',
-        body: formData
-      });
-      if(!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Something went wrong')
-      }
-      router.replace("/blog");
-    } catch (error) {
-      console.error("Something went wrong", error);
+    setError(null);
 
+    const response = await fetch("/api/blog", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+      setError(payload?.error ?? "Something went wrong");
+      return;
     }
-  }
+
+    router.push("/blog");
+    router.refresh();
+  };
 
   return (
     <section className="container mx-auto py-12.5">
-      <h1 className='text-2xl font-bold mb-8'>Add Post</h1>
-      <Form onSubmit={handleSubmit}/>
+      <h1 className="mb-8 text-2xl font-bold">Add Post</h1>
+      {error ? <p className="mb-4 text-sm text-red-500">{error}</p> : null}
+      <Form mode="create" submitLabel="Add Post" onSubmit={handleSubmit} />
     </section>
-  )
-}
+  );
+};
 
-export default page
+export default AddPostPage;

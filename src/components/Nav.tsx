@@ -12,7 +12,7 @@ const Nav = () => {
     const navItems = [
         { name: "Home", path: "/" },
         { name: "Blog", path: "/blog" },
-        { name: "Test", path: "/blog/add" },
+        { name: "Add Post", path: "/blog/add" },
     ]
     return (
         <nav className='py-5 px-6 flex justify-between items-center border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50'>
